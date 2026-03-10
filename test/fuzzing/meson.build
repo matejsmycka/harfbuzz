@@ -4,6 +4,8 @@ tests = [
   'hb-raster-fuzzer.cc',
   'hb-vector-fuzzer.cc',
   'hb-repacker-fuzzer.cc',
+  'hb-draw-fuzzer.cc',
+  'hb-ot-layout-fuzzer.cc',
 ]
 
 # Build the binaries
@@ -140,3 +142,27 @@ if not get_option('subset').disabled()
     i += 1
   endforeach
 endif
+
+i = 0
+foreach chunk : fonts_glob_chunks
+  test('draw-fuzzer-chunk-@0@'.format(i),
+    hb_draw_fuzzer_exe,
+    args: chunk,
+    workdir: meson.current_build_dir() / '..' / '..',
+    protocol: 'tap',
+    suite: ['fuzzing'],
+  )
+  i += 1
+endforeach
+
+i = 0
+foreach chunk : fonts_glob_chunks
+  test('ot-layout-fuzzer-chunk-@0@'.format(i),
+    hb_ot_layout_fuzzer_exe,
+    args: chunk,
+    workdir: meson.current_build_dir() / '..' / '..',
+    protocol: 'tap',
+    suite: ['fuzzing'],
+  )
+  i += 1
+endforeach
